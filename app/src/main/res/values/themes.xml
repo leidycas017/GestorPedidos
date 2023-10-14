@@ -2,4 +2,7 @@
 <resources>
 
     <style name="Theme.GestorPedidos" parent="android:Theme.Material.Light.NoActionBar" />
+    <style name="splashScreen" parent="Theme.GestorPedidos">
+        <item name="android:windowBackground">@drawable/splash_image</item>
+    </style>
 </resources>
