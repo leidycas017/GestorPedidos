@@ -59,11 +59,11 @@ fun LoginScreen(navController: NavController) {
             .background(
                 brush = Brush.verticalGradient(
                     colors = listOf(
-                        Color(239, 127, 26), // Amarillo oscuro
-                        Color(255, 153, 51), // Amarillo
-                        Color(255, 128, 0), // Amarillo más oscuro
-                        Color(255, 102, 0), // Naranja
-                        Color(255, 77, 0)  // Naranja oscuro
+                        Color(221, 206, 255),  // Morado suave
+                        Color(187, 167, 255),  // Morado claro
+                        Color(162, 141, 255),  // Morado medio
+                        Color(128, 109, 255),  // Morado oscuro
+                        Color(77, 58, 255)    // Morado profundo
                     )
                 )
             )

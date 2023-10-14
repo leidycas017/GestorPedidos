@@ -85,12 +85,11 @@ fun DesignSplashScreen(
             .background(
                 Brush.verticalGradient(
                     colors = listOf(
-                        Color(255, 178, 102),
-                        Color(255, 153, 51),
-                        Color(255, 128, 0),
-                        Color(255, 102, 0),
-                        Color(255, 77, 0),
-                        Color(255, 51, 0),
+                        Color(221, 206, 255),  // Morado suave
+                        Color(187, 167, 255),  // Morado claro
+                        Color(162, 141, 255),  // Morado medio
+                        Color(128, 109, 255),  // Morado oscuro
+                        Color(77, 58, 255)    // Morado profundo
                     )
                 )
             ),
