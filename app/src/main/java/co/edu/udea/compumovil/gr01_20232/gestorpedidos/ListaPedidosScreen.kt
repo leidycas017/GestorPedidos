@@ -26,59 +26,13 @@ import androidx.compose.ui.res.colorResource
 @Composable
 fun ListaPedidosScreen(navController: NavController) {
     val sharedViewModel: SharedViewModel = viewModel()
-    // Traer el username ingresado en LoginScreen
     val userName = sharedViewModel.getLoginUserName()
-
-    // Lista de pedidos manual para pruebas de diseño
     val pedidos = listOf(
         "Pedido 1",
         "Pedido 2",
         "Pedido 3",
         "Pedido 4"
     )
-
-    // Scaffold con la barra de navegación superior, ventana con scroll
-    Scaffold(
-        topBar = {
-            GradientTopAppBar(title = "Lista de Pedidos", userName)
-        },
-        content = {padding ->
-            // Contenido de la lista de pedidos
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding)
-            ) {
-                // Espacio entre la barra de navegación y la lista de pedidos
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Lista de pedidos
-                LazyColumn {
-                    items(pedidos) { pedido ->
-                        PedidoItem(pedido = pedido)
-                    }
-                }
-            }
-        },
-        floatingActionButton = {
-            // Botón flotante para agregar un nuevo pedido
-            FloatingActionButton(
-                onClick = {
-                    //funcionalidades del boton pendientes
-                }
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Add,
-                    contentDescription = "Agregar pedido"
-                )
-            }
-        }
-    )
-}
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun GradientTopAppBar(title: String, userName: String, modifier: Modifier = Modifier) {
-    // Gradiente horizontal del topbar
     val gradientBrush = Brush.horizontalGradient(
         colors = listOf(
             Color(255, 128, 0),  // Shade 1
@@ -87,25 +41,48 @@ fun GradientTopAppBar(title: String, userName: String, modifier: Modifier = Modi
         )
     )
 
-    TopAppBar(
-        title = {
-            Text(text = title)
-                },
-        modifier = modifier
-            .background(gradientBrush)
-            .fillMaxSize(),
-        actions = {
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
+    Scaffold(
+        topBar = {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(MaterialTheme.colorScheme.background) // Establece el color de fondo naranja
             ) {
-                Text(
-                    text = userName,
-                    color = Color.White
+                TopAppBar(
+                    title = { Text(text = "Lista de Pedidos") },
+                    colors = TopAppBarDefaults.mediumTopAppBarColors(
+                        containerColor = MaterialTheme.colorScheme.primary,
+                        titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                        navigationIconContentColor = MaterialTheme.colorScheme.onPrimary,
+                        actionIconContentColor = MaterialTheme.colorScheme.onSecondary
+                    ),
+                    actions = {
+                        Text(
+                            text = userName,
+                            color = Color.White,
+                            modifier = Modifier.padding(end = 16.dp)
+                        )
+                    }
                 )
             }
+        },
+        content = {paddingValues ->
+            LazyColumn(
+                contentPadding = paddingValues,
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(pedidos) { pedido ->
+                    PedidoItem(pedido = pedido)
+                    Divider(
+                        color = Color.Gray,
+                        thickness = 1.dp,
+                        modifier = Modifier.padding(horizontal = 16.dp)
+                    )
+                }
+            }
         }
-    )
 
+    )
 }
 @Composable
 fun PedidoItem(pedido: String) {
@@ -113,8 +90,6 @@ fun PedidoItem(pedido: String) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
-            .background(Color.White)
-            .border(1.dp,Color.Gray)
     ) {
         Text(
             text = pedido,
@@ -127,7 +102,7 @@ fun PedidoItem(pedido: String) {
             imageVector = Icons.Default.Delete,
             contentDescription = "Eliminar pedido",
             modifier = Modifier.clickable {
-                // Funcionalidad de eliminar
+                // Lógica para eliminar el pedido
             }
         )
 
@@ -135,7 +110,7 @@ fun PedidoItem(pedido: String) {
             imageVector = Icons.Default.Edit,
             contentDescription = "Editar pedido",
             modifier = Modifier.clickable {
-                // Funcionalidad de editar
+                // Lógica para editar el pedido
             }
         )
     }
