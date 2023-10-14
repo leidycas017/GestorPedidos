@@ -1,4 +1,5 @@
 package co.edu.udea.compumovil.gr01_20232.gestorpedidos
+import android.graphics.drawable.Icon
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.navigation.NavController
@@ -15,11 +16,14 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.border
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.material3.LargeFloatingActionButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.res.colorResource
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -79,6 +83,16 @@ fun ListaPedidosScreen(navController: NavController) {
                         modifier = Modifier.padding(horizontal = 16.dp)
                     )
                 }
+            }
+        },
+        floatingActionButton = {
+            LargeFloatingActionButton(
+                onClick = {  },
+                shape = CircleShape,
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = MaterialTheme.colorScheme.onPrimary
+            ) {
+                Icon(Icons.Filled.Add, "Large floating action button")
             }
         }
 
