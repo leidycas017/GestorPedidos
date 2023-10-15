@@ -6,7 +6,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 
 @Composable
-fun NavigationScreen() {
+fun NavigationScreen(myViewModel: SharedViewModel) {
 
     val navController = rememberNavController()
 
@@ -15,15 +15,15 @@ fun NavigationScreen() {
         startDestination = DestinationScreen.SplashScreenDest.route
     ) {
         composable(route = DestinationScreen.SplashScreenDest.route) {
-            SplashScreen(navController = navController)
+            SplashScreen(navController = navController,myViewModel)
         }
 
         composable(route = DestinationScreen.LoginScreenDest.route) {
-            LoginScreen(navController = navController)
+            LoginScreen(navController = navController, myViewModel)
         }
 
         composable(route = DestinationScreen.ListaPedidosScreenDest.route) {
-            ListaPedidosScreen(navController = navController)
+            ListaPedidosScreen(navController = navController,myViewModel)
         }
     }
 }

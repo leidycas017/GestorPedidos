@@ -15,7 +15,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             setContent {
                 Surface(color = MaterialTheme.colorScheme.background) {
-                    NavigationScreen()
+                    NavigationScreen(myViewModel)
                 }
             }
         }

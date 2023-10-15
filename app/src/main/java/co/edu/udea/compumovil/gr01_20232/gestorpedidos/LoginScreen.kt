@@ -49,8 +49,7 @@ val fontFamily = FontFamily(
 )
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(navController: NavController) {
-    val sharedViewModel: SharedViewModel = viewModel()
+fun LoginScreen(navController: NavController,myViewModel: SharedViewModel) {
     var userName by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
     Box(
@@ -127,7 +126,7 @@ fun LoginScreen(navController: NavController) {
                     Button(
                         onClick = {
                             //guardar informacion de incicio de sesion en el view model
-                            sharedViewModel.setLoginInfo(userName, password)
+                            myViewModel.setLoginInfo(userName, password)
                             navController.navigate(route = DestinationScreen.ListaPedidosScreenDest.route)
                         },
                         modifier = Modifier

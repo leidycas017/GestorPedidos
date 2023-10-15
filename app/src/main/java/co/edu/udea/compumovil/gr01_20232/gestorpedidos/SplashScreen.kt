@@ -16,15 +16,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import kotlinx.coroutines.delay
+import androidx.compose.ui.text.googlefonts.GoogleFont
+import androidx.compose.ui.text.googlefonts.Font
+
 
 @Composable
-fun SplashScreen(navController: NavController) {
+fun SplashScreen(navController: NavController,myViewModel: SharedViewModel) {
 
     val scaleAnimation: Animatable<Float, AnimationVector1D> = remember { Animatable(initialValue = 0f) }
 
@@ -103,15 +107,14 @@ fun DesignSplashScreen(
                     .size(400.dp)
                     .scale(scale = scaleAnimation.value),
             )
-
             Text(
-                text = "ListWise",
-                color = Color.White,
-                fontSize = 40.sp,
-                fontWeight = FontWeight.ExtraBold,
-                fontFamily = FontFamily.Serif,
-                textAlign = TextAlign.Center,
-                modifier = modifier.scale(scale = scaleAnimation.value)
+                text = "ListWise", // Reemplaza con el nombre de tu app
+                fontFamily = fontFamily,
+                fontSize = 50.sp, // Tamaño del texto más grande
+                fontWeight = FontWeight.Bold, // Fuente en negrita
+                modifier = Modifier
+                    .align(Alignment.CenterHorizontally) // Centrar horizontalmente
+                    .scale(scale = scaleAnimation.value)
             )
         }
     }

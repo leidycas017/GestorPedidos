@@ -28,14 +28,21 @@ import androidx.compose.ui.res.colorResource
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ListaPedidosScreen(navController: NavController) {
-    val sharedViewModel: SharedViewModel = viewModel()
-    val userName = sharedViewModel.getLoginUserName()
+fun ListaPedidosScreen(navController: NavController,myViewModel: SharedViewModel) {
+    val userName = myViewModel.getLoginUserName()
     val pedidos = listOf(
         "Pedido 1",
         "Pedido 2",
         "Pedido 3",
-        "Pedido 4"
+        "Pedido 4",
+        "Pedido 5",
+        "Pedido 6",
+        "Pedido 7",
+        "Pedido 8",
+        "Pedido 9",
+        "Pedido 10",
+        "Pedido 11",
+        "Pedido 12",
     )
     val gradientBrush = Brush.horizontalGradient(
         colors = listOf(
