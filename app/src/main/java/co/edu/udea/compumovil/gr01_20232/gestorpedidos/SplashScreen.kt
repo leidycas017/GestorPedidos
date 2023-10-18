@@ -15,16 +15,11 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import kotlinx.coroutines.delay
-import androidx.compose.ui.text.googlefonts.GoogleFont
-import androidx.compose.ui.text.googlefonts.Font
 
 
 @Composable
@@ -40,7 +35,7 @@ fun SplashScreen(navController: NavController,myViewModel: SharedViewModel) {
     )
 
     DesignSplashScreen(
-        imagePainter = painterResource(id = R.drawable.logo2),
+        imagePainter = painterResource(id = R.drawable.logo),
         scaleAnimation = scaleAnimation
     )
 }

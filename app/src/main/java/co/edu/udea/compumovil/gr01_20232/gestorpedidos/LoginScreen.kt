@@ -17,18 +17,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontStyle
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.googlefonts.Font
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.compose.ui.res.colorResource
 
 val provider = GoogleFont.Provider(
     providerAuthority = "com.google.android.gms.fonts",
@@ -74,7 +68,7 @@ fun LoginScreen(navController: NavController,myViewModel: SharedViewModel) {
         ) {
             // Logo
             Image(
-                painter = painterResource(id = R.drawable.logo2), // Reemplaza con el recurso de tu logo
+                painter = painterResource(id = R.drawable.logo), // Reemplaza con el recurso de tu logo
                 contentDescription = "Logo",
                 modifier = Modifier
                     .fillMaxWidth()

@@ -1,4 +1,7 @@
 package co.edu.udea.compumovil.gr01_20232.gestorpedidos
+
+
+
 import android.graphics.drawable.Icon
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -26,24 +29,45 @@ import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.ui.res.colorResource
 
+data class Pedido(val id: Int, val nombre: String, val valor: Double, val productos: List<Producto>)
+data class Producto(val id: Int, val nombre: String, val valor: Double)
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListaPedidosScreen(navController: NavController,myViewModel: SharedViewModel) {
     val userName = myViewModel.getLoginUserName()
     val pedidos = listOf(
-        "Pedido 1",
-        "Pedido 2",
-        "Pedido 3",
-        "Pedido 4",
-        "Pedido 5",
-        "Pedido 6",
-        "Pedido 7",
-        "Pedido 8",
-        "Pedido 9",
-        "Pedido 10",
-        "Pedido 11",
-        "Pedido 12",
+        Pedido(
+            id = 1,
+            nombre = "Pedido 1",
+            valor = 10.0,
+            productos = listOf(
+                Producto(101, "Producto 1", 5.0),
+                Producto(102, "Producto 2", 3.0)
+            )
+        ),
+        Pedido(
+            id = 2,
+            nombre = "Pedido 2",
+            valor = 15.0,
+            productos = listOf(
+                Producto(103, "Producto 3", 7.0),
+                Producto(104, "Producto 4", 4.0)
+            )
+        ),
+        Pedido(
+            id = 3,
+            nombre = "Pedido 3",
+            valor = 20.0,
+            productos = listOf(
+                Producto(105, "Producto 5", 8.0),
+                Producto(106, "Producto 6", 2.0)
+            )
+        )
     )
+    myViewModel.setPedidos(pedidos)
+
     val gradientBrush = Brush.horizontalGradient(
         colors = listOf(
             Color(255, 128, 0),  // Shade 1
@@ -83,7 +107,7 @@ fun ListaPedidosScreen(navController: NavController,myViewModel: SharedViewModel
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(pedidos) { pedido ->
-                    PedidoItem(pedido = pedido)
+                    PedidoItem(pedido = pedido, navController)
                     Divider(
                         color = Color.Gray,
                         thickness = 1.dp,
@@ -106,14 +130,14 @@ fun ListaPedidosScreen(navController: NavController,myViewModel: SharedViewModel
     )
 }
 @Composable
-fun PedidoItem(pedido: String) {
+fun PedidoItem(pedido: Pedido, navController: NavController) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
     ) {
         Text(
-            text = pedido,
+            text = pedido.nombre,
             modifier = Modifier
                 .weight(1f)
                 .padding(16.dp)
@@ -131,7 +155,8 @@ fun PedidoItem(pedido: String) {
             imageVector = Icons.Default.Edit,
             contentDescription = "Editar pedido",
             modifier = Modifier.clickable {
-                // Lógica para editar el pedido
+                //navController.navigate("editarPedidoScreen/${pedido.id}")
+                navController.navigate(route = DestinationScreen.EditarPedidoScreenDest.route)
             }
         )
     }
