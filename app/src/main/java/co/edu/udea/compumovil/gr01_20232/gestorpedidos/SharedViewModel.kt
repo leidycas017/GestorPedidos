@@ -7,7 +7,11 @@ class SharedViewModel : ViewModel() {
     private var username: String = ""
     private var password: String = ""
     private val _pedidos = MutableLiveData<List<Pedido>>()
+    private val _productoSeleccionado = MutableLiveData<Producto>()
     val pedidos: LiveData<List<Pedido>> get() = _pedidos
+
+    val productoSeleccionado: LiveData<Producto> = _productoSeleccionado
+
 
     //LOGIN SCREEN GETTERS AND SETTERS
     fun setLoginInfo(username: String, password: String) {
@@ -31,5 +35,18 @@ class SharedViewModel : ViewModel() {
     fun setPedidos(pedidos: List<Pedido>) {
         _pedidos.value = pedidos
     }
+
+    fun setNombreProductoSeleccionado(nombre:String){
+        _productoSeleccionado.value?.nombre ?: nombre
+    }
+
+    fun setValorProductoSeleccionado(valor:Double){
+        _productoSeleccionado.value?.valor ?: valor
+    }
+
+    fun setProductoSeleccionado(productoSeleccionado:Producto){
+        _productoSeleccionado.value = productoSeleccionado
+    }
+
 
 }

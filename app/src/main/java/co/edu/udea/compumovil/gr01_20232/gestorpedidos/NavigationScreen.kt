@@ -26,10 +26,15 @@ fun NavigationScreen(myViewModel: SharedViewModel) {
             ListaPedidosScreen(navController = navController,myViewModel)
         }
 
-        composable(route = DestinationScreen.EditarPedidoScreenDest.route) { navBackStackEntry ->
+        composable(route = DestinationScreen.MapScreenDest.route) {
+            MapScreen(navController = navController)
+        }
+        composable(route = DestinationScreen.ListaProductoScreenDest.route) { navBackStackEntry ->
             val pedidoId = navBackStackEntry.arguments?.getInt("pedidoId")
-            EditarPedidoScreen(navController, 1, myViewModel)
+            ListaProductosScreen(navController, 1, myViewModel)
         }
 
     }
 }
+
+

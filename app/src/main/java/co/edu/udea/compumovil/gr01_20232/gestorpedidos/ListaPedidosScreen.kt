@@ -2,7 +2,6 @@ package co.edu.udea.compumovil.gr01_20232.gestorpedidos
 
 
 
-import android.graphics.drawable.Icon
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.navigation.NavController
@@ -20,17 +19,13 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.background
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.border
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.ui.res.colorResource
 
 data class Pedido(val id: Int, val nombre: String, val valor: Double, val productos: List<Producto>)
-data class Producto(val id: Int, val nombre: String, val valor: Double)
+data class Producto(val id: Int, var nombre: String, val valor: Number)
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -43,7 +38,7 @@ fun ListaPedidosScreen(navController: NavController,myViewModel: SharedViewModel
             nombre = "Pedido 1",
             valor = 10.0,
             productos = listOf(
-                Producto(101, "Producto 1", 5.0),
+                Producto(101, "Producto 1", 7.0),
                 Producto(102, "Producto 2", 3.0)
             )
         ),
@@ -155,8 +150,14 @@ fun PedidoItem(pedido: Pedido, navController: NavController) {
             imageVector = Icons.Default.Edit,
             contentDescription = "Editar pedido",
             modifier = Modifier.clickable {
-                //navController.navigate("editarPedidoScreen/${pedido.id}")
-                navController.navigate(route = DestinationScreen.EditarPedidoScreenDest.route)
+                navController.navigate(route = DestinationScreen.ListaProductoScreenDest.route)
+            }
+        )
+        Icon(
+            imageVector = Icons.Default.LocationOn,
+            contentDescription = "Location",
+            modifier = Modifier.clickable {
+                navController.navigate(route = DestinationScreen.MapScreenDest.route)
             }
         )
     }
