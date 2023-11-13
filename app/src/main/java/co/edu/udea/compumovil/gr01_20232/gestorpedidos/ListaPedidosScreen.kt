@@ -23,8 +23,11 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
 
-data class Pedido(val id: Int, val nombre: String, val valor: Double, val productos: List<Producto>)
+data class Pedido(val id: Int, val nombre: String, val fecha: String, val valor: Double, val colaborador: String,val productos: List<Producto>)
 data class Producto(val id: Int, var nombre: String, val valor: Number)
 
 
@@ -37,6 +40,8 @@ fun ListaPedidosScreen(navController: NavController,myViewModel: SharedViewModel
             id = 1,
             nombre = "Pedido 1",
             valor = 10.0,
+            fecha = "10/11/2023",
+            colaborador = "Miguel",
             productos = listOf(
                 Producto(101, "Producto 1", 7.0),
                 Producto(102, "Producto 2", 3.0)
@@ -45,6 +50,8 @@ fun ListaPedidosScreen(navController: NavController,myViewModel: SharedViewModel
         Pedido(
             id = 2,
             nombre = "Pedido 2",
+            fecha = "10/11/2023",
+            colaborador = "Juan",
             valor = 15.0,
             productos = listOf(
                 Producto(103, "Producto 3", 7.0),
@@ -54,6 +61,8 @@ fun ListaPedidosScreen(navController: NavController,myViewModel: SharedViewModel
         Pedido(
             id = 3,
             nombre = "Pedido 3",
+            fecha = "10/11/2023",
+            colaborador = "Marta",
             valor = 20.0,
             productos = listOf(
                 Producto(105, "Producto 5", 8.0),
@@ -126,39 +135,94 @@ fun ListaPedidosScreen(navController: NavController,myViewModel: SharedViewModel
 }
 @Composable
 fun PedidoItem(pedido: Pedido, navController: NavController) {
-    Row(
+    Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        Text(
-            text = pedido.nombre,
+        Column(
             modifier = Modifier
-                .weight(1f)
+                .fillMaxWidth()
                 .padding(16.dp)
-        )
+        ) {
+            // Nombre del pedido en negrita y más grande en la esquina superior izquierda
+            Text(
+                text = pedido.nombre,
+                fontWeight = FontWeight.Bold,
+                fontSize = 20.sp
+            )
 
-        Icon(
-            imageVector = Icons.Default.Delete,
-            contentDescription = "Eliminar pedido",
-            modifier = Modifier.clickable {
-                // Lógica para eliminar el pedido
-            }
-        )
+            Spacer(modifier = Modifier.height(8.dp))
 
-        Icon(
-            imageVector = Icons.Default.Edit,
-            contentDescription = "Editar pedido",
-            modifier = Modifier.clickable {
-                navController.navigate(route = DestinationScreen.ListaProductoScreenDest.route)
+            // Fecha de entrega en la esquina inferior izquierda
+            Text(
+                text = "${pedido.fecha}", // Ajusta según tu modelo de datos
+                fontSize = 14.sp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.Start)
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Nombre del colaborador en la esquina inferior izquierda
+            Text(
+                text = "Colaborador: ${pedido.colaborador}", // Ajusta según tu modelo de datos
+                fontSize = 14.sp,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.End)
+            )
+
+            Spacer(modifier = Modifier.weight(1f))
+
+            // Iconos de editar y eliminar en la esquina superior derecha
+            Column(
+                verticalArrangement = Arrangement.Top,
+                modifier = Modifier
+                    .padding(4.dp)
+                    .align(Alignment.End)
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = "Editar pedido",
+                    modifier = Modifier
+                        .clickable {
+                            navController.navigate(route = DestinationScreen.ListaProductoScreenDest.route)
+                        }
+                        .padding(4.dp)
+                )
+                Icon(
+                    imageVector = Icons.Default.Delete,
+                    contentDescription = "Eliminar pedido",
+                    modifier = Modifier
+                        .clickable {
+                            // Lógica para eliminar el pedido
+                        }
+                        .padding(4.dp)
+                )
+                Icon(
+                    imageVector = Icons.Default.LocationOn,
+                    contentDescription = "Location",
+                    modifier = Modifier
+                        .clickable {
+                            navController.navigate(route = DestinationScreen.MapScreenDest.route)
+                        }
+                        .padding(4.dp)
+                )
             }
-        )
-        Icon(
-            imageVector = Icons.Default.LocationOn,
-            contentDescription = "Location",
-            modifier = Modifier.clickable {
-                navController.navigate(route = DestinationScreen.MapScreenDest.route)
-            }
-        )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Total del pedido en la esquina superior derecha con diferente color y tamaño de fuente
+            Text(
+                text = "$${pedido.valor}",
+                fontSize = 18.sp,
+                color = Color.Blue, // Ajusta el color según tus preferencias
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.End)
+            )
+        }
     }
 }
