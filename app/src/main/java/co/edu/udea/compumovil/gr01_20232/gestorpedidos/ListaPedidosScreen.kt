@@ -112,11 +112,6 @@ fun ListaPedidosScreen(navController: NavController,myViewModel: SharedViewModel
             ) {
                 items(pedidos) { pedido ->
                     PedidoItem(pedido = pedido, navController)
-                    Divider(
-                        color = Color.Gray,
-                        thickness = 1.dp,
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
                 }
             }
         },
@@ -138,12 +133,18 @@ fun PedidoItem(pedido: Pedido, navController: NavController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(16.dp)
+            .padding(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = Color.White, //Card background color
+            contentColor = Color.DarkGray  //Card content color,e.g.text
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
+                .background(Color.White) // Fondo blanco del Card
         ) {
             Column(
                 modifier = Modifier
@@ -179,6 +180,7 @@ fun PedidoItem(pedido: Pedido, navController: NavController) {
                 Icon(
                     imageVector = Icons.Default.Edit,
                     contentDescription = "Editar pedido",
+                    tint = Color.Magenta, // Color azul para el ícono de editar
                     modifier = Modifier
                         .clickable {
                             navController.navigate(route = DestinationScreen.ListaProductoScreenDest.route)
@@ -188,6 +190,7 @@ fun PedidoItem(pedido: Pedido, navController: NavController) {
                 Icon(
                     imageVector = Icons.Default.Delete,
                     contentDescription = "Eliminar pedido",
+                    tint = Color.Red, // Color rojo para el ícono de eliminar
                     modifier = Modifier
                         .clickable {
                             // Lógica para eliminar el pedido
@@ -197,6 +200,7 @@ fun PedidoItem(pedido: Pedido, navController: NavController) {
                 Icon(
                     imageVector = Icons.Default.LocationOn,
                     contentDescription = "Location",
+                    tint = Color.Gray, // Color amarillo para el ícono de ubicación
                     modifier = Modifier
                         .clickable {
                             navController.navigate(route = DestinationScreen.MapScreenDest.route)
@@ -220,4 +224,3 @@ fun PedidoItem(pedido: Pedido, navController: NavController) {
         }
     }
 }
-
