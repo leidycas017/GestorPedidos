@@ -140,48 +140,41 @@ fun PedidoItem(pedido: Pedido, navController: NavController) {
             .fillMaxWidth()
             .padding(16.dp)
     ) {
-        Column(
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
         ) {
-            // Nombre del pedido en negrita y más grande en la esquina superior izquierda
-            Text(
-                text = pedido.nombre,
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp
-            )
-
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Fecha de entrega en la esquina inferior izquierda
-            Text(
-                text = "${pedido.fecha}", // Ajusta según tu modelo de datos
-                fontSize = 14.sp,
+            Column(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.Start)
-            )
+                    .fillMaxHeight()
+            ) {
+                Text(
+                    text = pedido.nombre,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
+                )
 
-            Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
 
-            // Nombre del colaborador en la esquina inferior izquierda
-            Text(
-                text = "Colaborador: ${pedido.colaborador}", // Ajusta según tu modelo de datos
-                fontSize = 14.sp,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.End)
-            )
+                Text(
+                    text = "${pedido.fecha}",
+                    fontSize = 14.sp
+                )
 
-            Spacer(modifier = Modifier.weight(1f))
+                Spacer(modifier = Modifier.height(8.dp))
 
-            // Iconos de editar y eliminar en la esquina superior derecha
+                Text(
+                    text = "Colaborador: ${pedido.colaborador}",
+                    fontSize = 14.sp
+                )
+            }
+
             Column(
                 verticalArrangement = Arrangement.Top,
                 modifier = Modifier
                     .padding(4.dp)
-                    .align(Alignment.End)
+                    .align(Alignment.TopEnd)
             ) {
                 Icon(
                     imageVector = Icons.Default.Edit,
@@ -212,17 +205,19 @@ fun PedidoItem(pedido: Pedido, navController: NavController) {
                 )
             }
 
-            Spacer(modifier = Modifier.height(8.dp))
-
-            // Total del pedido en la esquina superior derecha con diferente color y tamaño de fuente
-            Text(
-                text = "$${pedido.valor}",
-                fontSize = 18.sp,
-                color = Color.Blue, // Ajusta el color según tus preferencias
+            Column(
+                verticalArrangement = Arrangement.Bottom,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .align(Alignment.End)
-            )
+                    .padding(4.dp)
+                    .align(Alignment.BottomStart)
+            ) {
+                Text(
+                    text = "$${pedido.valor}",
+                    fontSize = 18.sp,
+                    color = Color.Blue
+                )
+            }
         }
     }
 }
+
