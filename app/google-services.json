@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "450434930781",
+    "project_id": "gestorpedidossignin",
+    "storage_bucket": "gestorpedidossignin.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:450434930781:android:090fb6273f7a2559d515b4",
+        "android_client_info": {
+          "package_name": "co.edu.udea.compumovil.gr01_20232.gestorpedidos"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "450434930781-8goo0ug0hnglsahl4c92rb4gi2kaedel.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "co.edu.udea.compumovil.gr01_20232.gestorpedidos",
+            "certificate_hash": "8f29cd09ec8dfdde42698dfb62d1a28ada448134"
+          }
+        },
+        {
+          "client_id": "450434930781-d5a36ddtvqoh64tdeie3oad4l0oo8j0o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDdAuCy3iBCzL94IllEfHCbMSTCCsuJvwU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "450434930781-d5a36ddtvqoh64tdeie3oad4l0oo8j0o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

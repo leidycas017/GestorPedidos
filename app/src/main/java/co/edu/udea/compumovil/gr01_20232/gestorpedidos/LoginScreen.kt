@@ -1,4 +1,8 @@
 package co.edu.udea.compumovil.gr01_20232.gestorpedidos
+import android.text.style.BackgroundColorSpan
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.ui.Alignment
 import androidx.compose.runtime.remember
 import androidx.compose.foundation.clickable
@@ -17,12 +21,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.googlefonts.Font
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInClient
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.ApiException
+import com.google.firebase.auth.GoogleAuthProvider
 
 val provider = GoogleFont.Provider(
     providerAuthority = "com.google.android.gms.fonts",
@@ -43,9 +53,26 @@ val fontFamily = FontFamily(
 )
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun LoginScreen(navController: NavController,myViewModel: SharedViewModel) {
+fun LoginScreen(navController: NavController,myViewModel: SharedViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
     var userName by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    val token = "450434930781-d5a36ddtvqoh64tdeie3oad4l0oo8j0o.apps.googleusercontent.com"
+    val context = LocalContext.current
+    val launcher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts
+            .StartActivityForResult()
+    ){
+        val task = GoogleSignIn.getSignedInAccountFromIntent(it.data)
+        try {
+            val account = task.getResult(ApiException::class.java)
+            val credential = GoogleAuthProvider.getCredential(account.idToken,null)
+            myViewModel.signInWithGoogleCredential(credential){
+                navController.navigate(route = DestinationScreen.ListaPedidosScreenDest.route)
+            }
+        }catch (e:Exception){
+            Log.d("LoginScreen","Google SignIn fallo")
+        }
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -65,6 +92,7 @@ fun LoginScreen(navController: NavController,myViewModel: SharedViewModel) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(16.dp)
+
         ) {
             // Logo
             Image(
@@ -91,12 +119,21 @@ fun LoginScreen(navController: NavController,myViewModel: SharedViewModel) {
 
             Card(
                 modifier = Modifier
+                    .padding(10.dp)
                     .fillMaxWidth()
                     .weight(4f) // Ocupa 4/3 del espacio disponible
-                    .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 100.dp))
+                    .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 100.dp)),
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.White,
+                )
+
             ) {
                 Column(
-                    modifier = Modifier.padding(16.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .fillMaxHeight()
+                        .padding(16.dp)
+                        .background(Color(255,255,255))
                 ) {
                     TextField(
                         value = userName,
@@ -105,6 +142,7 @@ fun LoginScreen(navController: NavController,myViewModel: SharedViewModel) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp)
+                            .background(Color.White)
                     )
 
                     TextField(
@@ -115,13 +153,12 @@ fun LoginScreen(navController: NavController,myViewModel: SharedViewModel) {
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(8.dp)
+                            .background(Color.White)
                     )
 
                     Button(
                         onClick = {
-                            //guardar informacion de incicio de sesion en el view model
-                            myViewModel.setLoginInfo(userName, password)
-                            navController.navigate(route = DestinationScreen.ListaPedidosScreenDest.route)
+
                         },
                         modifier = Modifier
                             .fillMaxWidth()
@@ -134,29 +171,58 @@ fun LoginScreen(navController: NavController,myViewModel: SharedViewModel) {
                         )
                     }
 
-                    Text(
-                        text = "¿No tienes una cuenta? Regístrate",
-                        color = Color.Blue,
+                    Row(
                         modifier = Modifier
-                            .clickable {
-                                //navegacion a pantalla de registro
-                            }
-                            .padding(8.dp)
-                    )
+                            .fillMaxWidth(),
 
-                    Button(
-                        onClick = {
-                            //Implementacion inicio de sesion con google
-                        },
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+
+                    ){
+
+                        Text(
+                            text = "¿No tienes una cuenta? Regístrate",
+                            color = Color.Blue,
+                            modifier = Modifier
+                                .clickable {
+                                    //navegacion a pantalla de registro
+                                }
+                                .padding(8.dp)
+                        )
+
+                    }
+                    Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(8.dp)
+                            .padding(5.dp)
+                            .clip(RoundedCornerShape(10.dp))
+                            .background(Color.LightGray)
+                            .clickable {
+                                val opciones = GoogleSignInOptions.Builder(
+                                    GoogleSignInOptions.DEFAULT_SIGN_IN
+                                )
+                                    .requestIdToken(token)
+                                    .requestEmail()
+                                    .build()
+                                val googleSignInClient = GoogleSignIn.getClient(context,opciones)
+                                launcher.launch(googleSignInClient.signInIntent)
+                            },
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
 
-                    ) {
-                        Text(
-                            text = "Iniciar sesion con Google",
-                            color = Color.White // Color de texto en blanco
+                    ){
+                        Image(
+                            painter = painterResource(id = R.drawable.ic_google),
+                            contentDescription = "Google Login",
+                            modifier = Modifier
+                                .padding(10.dp)
+                                .size(30.dp)
                         )
+                        Text("Iniciar sesion con Google",
+                        fontSize = 14.sp,
+                            fontWeight = FontWeight.Bold
+                        )
+
                     }
                 }
             }
