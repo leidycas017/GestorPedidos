@@ -13,6 +13,7 @@ import kotlinx.coroutines.launch
 
 class SharedViewModel : ViewModel() {
     private val auth: FirebaseAuth = Firebase.auth
+    private val _loading = MutableLiveData(false)
     private var username: String = ""
     private var password: String = ""
     private val _pedidos = MutableLiveData<List<Pedido>>()
@@ -21,6 +22,25 @@ class SharedViewModel : ViewModel() {
 
     val productoSeleccionado: LiveData<Producto> = _productoSeleccionado
 
+    //LOGIN WITH EMAIL
+    fun signInWithEmail(email:String,password: String,home: () -> Unit)
+    =viewModelScope.launch{
+        try {
+            auth.signInWithEmailAndPassword(email,password)
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Log.d("Viewodel", "Login Email exitoso")
+                        home()
+                    } else {
+                        Log.d("Viewmodel","Login con email: ${task.result.toString()}")
+                    }
+
+                }
+        }catch (e:Exception){
+            Log.d("Viewmodel","Exception al loguear con  Email y Contraseña: "+"${e.message}")
+        }
+    }
+    //LOGIN WITH GOOGLE
     fun signInWithGoogleCredential(credential: AuthCredential, home:() -> Unit)
     =viewModelScope.launch {
         try {

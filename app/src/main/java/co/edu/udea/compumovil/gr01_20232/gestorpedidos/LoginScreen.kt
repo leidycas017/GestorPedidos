@@ -21,13 +21,28 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.text.googlefonts.GoogleFont
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.googlefonts.Font
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -56,6 +71,9 @@ val fontFamily = FontFamily(
 fun LoginScreen(navController: NavController,myViewModel: SharedViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
     var userName by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+    val showLoginForm = rememberSaveable{
+        mutableStateOf(true)
+    }
     val token = "450434930781-d5a36ddtvqoh64tdeie3oad4l0oo8j0o.apps.googleusercontent.com"
     val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(
@@ -96,11 +114,11 @@ fun LoginScreen(navController: NavController,myViewModel: SharedViewModel = andr
         ) {
             // Logo
             Image(
-                painter = painterResource(id = R.drawable.logo), // Reemplaza con el recurso de tu logo
+                painter = painterResource(id = R.drawable.logo),
                 contentDescription = "Logo",
                 modifier = Modifier
                     .fillMaxWidth()
-                    .weight(2f) // Ocupa 2/3 del espacio disponible
+                    .weight(1f) // Ocupa 2/3 del espacio disponible
                     .fillMaxHeight(0.4f) // Reducir la altura a un 40%
                     .padding(16.dp)
                     .align(Alignment.CenterHorizontally) // Centrar horizontalmente
@@ -121,111 +139,258 @@ fun LoginScreen(navController: NavController,myViewModel: SharedViewModel = andr
                 modifier = Modifier
                     .padding(10.dp)
                     .fillMaxWidth()
-                    .weight(4f) // Ocupa 4/3 del espacio disponible
-                    .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 100.dp)),
+                    .weight(5f), // Ocupa 4/3 del espacio disponible
                 colors = CardDefaults.cardColors(
                     containerColor = Color.White,
                 )
 
             ) {
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fillMaxHeight()
-                        .padding(16.dp)
-                        .background(Color(255,255,255))
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center,
+                    modifier = Modifier.padding(10.dp)
                 ) {
-                    TextField(
-                        value = userName,
-                        onValueChange = { userName = it },
-                        label = { Text("Nombre de usuario") },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp)
-                            .background(Color.White)
-                    )
-
-                    TextField(
-                        value = password,
-                        onValueChange = { password = it },
-                        label = { Text("Contraseña") },
-                        visualTransformation = PasswordVisualTransformation(),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp)
-                            .background(Color.White)
-                    )
-
-                    Button(
-                        onClick = {
-
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(8.dp)
-
-                    ) {
+                    if (showLoginForm.value){
+                        Spacer(modifier = Modifier.height(20.dp))
                         Text(
-                            text = "Login",
-                            color = Color.White
+                            text = "Inicia Sesión",
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(46, 0, 77), // Morado en formato RGB
+                            fontFamily = FontFamily.Serif,
+                            modifier = Modifier.padding(8.dp)
                         )
-                    }
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
+                        UserForm(
+                            isCreateAccount = false
+                        ){
+                                email,password->
+                            Log.d("Login ","Logueando con $email y $password")
 
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
+                        }
 
-                    ){
-
-                        Text(
-                            text = "¿No tienes una cuenta? Regístrate",
-                            color = Color.Blue,
+                        Row(
                             modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(5.dp)
+                                .clip(RoundedCornerShape(10.dp))
+                                .background(Color.LightGray)
                                 .clickable {
-                                    //navegacion a pantalla de registro
-                                }
-                                .padding(8.dp)
-                        )
+                                    val opciones = GoogleSignInOptions
+                                        .Builder(
+                                            GoogleSignInOptions.DEFAULT_SIGN_IN
+                                        )
+                                        .requestIdToken(token)
+                                        .requestEmail()
+                                        .build()
+                                    val googleSignInClient =
+                                        GoogleSignIn.getClient(context, opciones)
+                                    launcher.launch(googleSignInClient.signInIntent)
+                                },
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.Center
 
+                        ){
+                            Image(
+                                painter = painterResource(id = R.drawable.ic_google),
+                                contentDescription = "Google Login",
+                                modifier = Modifier
+                                    .padding(10.dp)
+                                    .size(30.dp)
+                            )
+                            Text("Iniciar sesion con Google",
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Bold
+                            )
+
+                        }
+
+                    }else{
+                        Spacer(modifier = Modifier.height(20.dp))
+                        Text(
+                            text = "Registrate",
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(46, 0, 77), // Morado en formato RGB
+                            fontFamily = FontFamily.Serif,
+                            modifier = Modifier.padding(8.dp)
+                        )
+                        UserForm(
+                            isCreateAccount = true
+                        ){
+                                email,password->
+                            Log.d("Registro ","Registrando con $email y $password")
+                        }
                     }
+                    Spacer(modifier = Modifier.height(15.dp))
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(5.dp)
-                            .clip(RoundedCornerShape(10.dp))
-                            .background(Color.LightGray)
-                            .clickable {
-                                val opciones = GoogleSignInOptions.Builder(
-                                    GoogleSignInOptions.DEFAULT_SIGN_IN
-                                )
-                                    .requestIdToken(token)
-                                    .requestEmail()
-                                    .build()
-                                val googleSignInClient = GoogleSignIn.getClient(context,opciones)
-                                launcher.launch(googleSignInClient.signInIntent)
-                            },
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.Center
-
-                    ){
-                        Image(
-                            painter = painterResource(id = R.drawable.ic_google),
-                            contentDescription = "Google Login",
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        val text1 =
+                            if(showLoginForm.value)"¿No tienes cuenta?"
+                            else "¿ya tienes cuenta?"
+                        val text2 =
+                            if(showLoginForm.value)"Registrate"
+                            else "Inicia sesion"
+                        Text(text = text1)
+                        Text(
+                            text = text2,
                             modifier = Modifier
-                                .padding(10.dp)
-                                .size(30.dp)
-                        )
-                        Text("Iniciar sesion con Google",
-                        fontSize = 14.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-
+                                .clickable { showLoginForm.value = !showLoginForm.value }
+                                .padding(start = 5.dp),
+                            color= Color.Blue
+                            )
                     }
+
                 }
             }
         }
     }
+}
+
+@OptIn(ExperimentalComposeUiApi::class)
+@Composable
+fun UserForm(
+    isCreateAccount: Boolean = false,
+    onDone: (String,String) -> Unit = {email,pwd ->}
+){
+    val email = rememberSaveable{
+        mutableStateOf("")
+    }
+    val password = rememberSaveable{
+        mutableStateOf("")
+    }
+    val passwordVisible = rememberSaveable{
+        mutableStateOf(false)
+    }
+
+    val valido = remember(email.value, password.value){
+        email.value.trim().isNotEmpty() &&
+                password.value.trim().isNotEmpty()
+
+    }
+    val keyboardController = LocalSoftwareKeyboardController.current
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+        EmailInput(
+            emailState = email
+        )
+        PasswordInput(
+            passwordState = password,
+            labelId = "Password",
+            passwordVisible = passwordVisible
+        )
+        SubmitButton(
+            textId = if (isCreateAccount)"Registrar cuenta" else "Inicar sesion",
+            inputValido = valido
+        ){
+            onDone(email.value.trim(),password.value.trim())
+            keyboardController?.hide()
+        }
+
+    }
+}
+
+@Composable
+fun SubmitButton(
+    textId: String,
+    inputValido: Boolean,
+    onClic: ()-> Unit
+) {
+    Button(onClick = onClic,
+        modifier = Modifier
+            .padding(3.dp)
+            .fillMaxWidth(),
+        shape = CircleShape,
+        enabled = inputValido
+        ) {
+        Text(text = textId,
+        modifier = Modifier
+            .padding(5.dp)
+        )
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun PasswordInput(
+    passwordState: MutableState<String>,
+    labelId: String,
+    passwordVisible: MutableState<Boolean>
+) {
+    val visualTransformation = if(passwordVisible.value)
+        VisualTransformation.None
+    else PasswordVisualTransformation()
+
+    OutlinedTextField(
+        value = passwordState.value,
+        onValueChange = {passwordState.value = it},
+        label = { Text(text = labelId)},
+        singleLine = true,
+        keyboardOptions = KeyboardOptions(
+            keyboardType = KeyboardType.Password
+        ),
+        modifier = Modifier
+            .padding(bottom = 10.dp, start = 10.dp, end = 10.dp)
+            .fillMaxWidth(),
+        visualTransformation = visualTransformation,
+        trailingIcon = {
+            if (passwordState.value.isNotBlank()){
+                PasswordVisibleIcon(passwordVisible)
+            }else null
+        }
+    )
+}
+
+@Composable
+fun PasswordVisibleIcon(
+    passwordVisible: MutableState<Boolean>
+) {
+    val image =
+        if(passwordVisible.value)
+            Icons.Default.VisibilityOff
+        else
+            Icons.Default.Visibility
+    IconButton(onClick = {
+        passwordVisible.value = !passwordVisible.value
+    }) {
+        Icon(
+            imageVector = image,
+            contentDescription = ""
+        )
+    }
+}
+
+@Composable
+fun EmailInput(
+    emailState: MutableState<String>,
+    labelID: String = "Email"
+) {
+    InputField(
+        valueState = emailState,
+        labelID = labelID,
+        keyboardType = KeyboardType.Email
+    )
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun InputField(
+    valueState: MutableState<String>,
+    labelID: String,
+    isSingleLine: Boolean = true,
+    keyboardType: KeyboardType
+) {
+    OutlinedTextField(
+        value = valueState.value,
+        onValueChange = { valueState.value = it},
+        label = { Text(text = labelID)},
+        singleLine = isSingleLine,
+        modifier = Modifier
+            .padding(bottom = 10.dp, start = 10.dp, end = 10.dp)
+            .fillMaxWidth(),
+        keyboardOptions = KeyboardOptions(
+            keyboardType = keyboardType
+        )
+    )
 }
