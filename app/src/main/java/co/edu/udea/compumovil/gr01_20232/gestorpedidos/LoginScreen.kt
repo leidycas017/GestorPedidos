@@ -70,7 +70,7 @@ val fontFamily = FontFamily(
 @Composable
 fun LoginScreen(navController: NavController,myViewModel: SharedViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
     var userName by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
+    userName = myViewModel.getUserName().toString()
     val showLoginForm = rememberSaveable{
         mutableStateOf(true)
     }
@@ -166,7 +166,9 @@ fun LoginScreen(navController: NavController,myViewModel: SharedViewModel = andr
                         ){
                                 email,password->
                             Log.d("Login ","Logueando con $email y $password")
-
+                            myViewModel.signInWithEmail(email,password){
+                                navController.navigate(DestinationScreen.ListaPedidosScreenDest.route)
+                            }
                         }
 
                         Row(
@@ -220,6 +222,9 @@ fun LoginScreen(navController: NavController,myViewModel: SharedViewModel = andr
                         ){
                                 email,password->
                             Log.d("Registro ","Registrando con $email y $password")
+                            myViewModel.createUserWithEmail(email,password){
+                                navController.navigate(DestinationScreen.ListaPedidosScreenDest.route)
+                            }
                         }
                     }
                     Spacer(modifier = Modifier.height(15.dp))

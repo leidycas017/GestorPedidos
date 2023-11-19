@@ -102,7 +102,9 @@ fun ListaPedidosScreen(navController: NavController,myViewModel: SharedViewModel
                             modifier = Modifier.padding(end = 16.dp)
                         )
                     }
+
                 )
+
             }
         },
         content = {paddingValues ->

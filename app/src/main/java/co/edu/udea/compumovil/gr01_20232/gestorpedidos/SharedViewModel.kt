@@ -8,6 +8,7 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.launch
 
 
@@ -39,6 +40,46 @@ class SharedViewModel : ViewModel() {
         }catch (e:Exception){
             Log.d("Viewmodel","Exception al loguear con  Email y Contraseña: "+"${e.message}")
         }
+    }
+
+    //CREATE USERS
+    fun createUserWithEmail(email:String,password: String,home: () -> Unit) {
+        if (_loading.value == false){
+            _loading.value = true
+            auth.createUserWithEmailAndPassword(email,password)
+                .addOnCompleteListener(){ task->
+                    if (task.isSuccessful){
+                        val displayName =
+                            task.result.user?.email?.split("@")?.get(0)
+                        createUser(displayName)
+                        home()
+                    }else{
+                        Log.d("Viewmodel","createUserWithEmail: ${task.result.toString()}")
+                    }
+                    _loading.value = false
+                }
+
+        }
+
+    }
+
+    private fun createUser(displayName: String?) {
+        val userId = auth.currentUser?.uid
+        val user = mutableMapOf<String,Any>()
+        user["user_id"] = userId.toString()
+        user["display_name"] = displayName.toString()
+        FirebaseFirestore.getInstance().collection("users")
+            .add(user)
+            .addOnSuccessListener {
+                Log.d("Viewmodel", "Creado ${it.id}")
+            }
+            .addOnFailureListener{
+                Log.d("Viewmodel", "Ocurrio un error ${it}")
+            }
+    }
+     fun getUserName(): String? {
+        val username = auth.currentUser?.displayName
+         return username
     }
     //LOGIN WITH GOOGLE
     fun signInWithGoogleCredential(credential: AuthCredential, home:() -> Unit)

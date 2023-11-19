@@ -19,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.delay
 
 
@@ -60,12 +61,20 @@ fun AnimationSplashContent(
         )
 
         delay(timeMillis = delayScreen)
-
-        navController.navigate(route = DestinationScreen.LoginScreenDest.route) {
-            popUpTo(route = DestinationScreen.SplashScreenDest.route) {
-                inclusive = true
+        if(FirebaseAuth.getInstance().currentUser?.email.isNullOrEmpty()){
+            navController.navigate(route = DestinationScreen.LoginScreenDest.route) {
+                popUpTo(route = DestinationScreen.SplashScreenDest.route) {
+                    inclusive = true
+                }
+            }
+        }else{
+            navController.navigate(route = DestinationScreen.ListaPedidosScreenDest.route) {
+                popUpTo(route = DestinationScreen.SplashScreenDest.route) {
+                    inclusive = true
+                }
             }
         }
+
     }
 }
 
