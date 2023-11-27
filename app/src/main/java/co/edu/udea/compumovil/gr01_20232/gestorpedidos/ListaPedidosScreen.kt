@@ -23,11 +23,44 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.LargeFloatingActionButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
+import com.google.firebase.Timestamp
+import java.text.SimpleDateFormat
+import java.util.Locale
 
-data class Pedido(val id: Int, val nombre: String, val fecha: String, val valor: Double, val colaborador: String,val productos: List<Producto>)
+
+data class Pedido(
+    val address: String,
+    val amount: List<Int>,
+    val collabName: String ,
+    val creationDate: Timestamp ,
+    val custName: String ,
+    val name: String ,
+    val product: List<String> ,
+    val shippingDate: Timestamp,
+    val status: String ,
+    val total: Double
+){
+    constructor() : this(
+        address = "",
+        amount = emptyList(),
+        collabName = "",
+        creationDate = Timestamp.now(),
+        custName = "",
+        name = "",
+        product = emptyList(),
+        shippingDate = Timestamp.now(),
+        status = "",
+        total = 0.0
+    )
+    fun getFormattedShippingDate(): String {
+        val dateFormat = SimpleDateFormat("dd MMM yyyy HH:mm:ss", Locale.getDefault())
+        return dateFormat.format(shippingDate.toDate())
+    }
+}
 data class Producto(val id: Int, var nombre: String, val valor: Number)
 
 
@@ -35,42 +68,11 @@ data class Producto(val id: Int, var nombre: String, val valor: Number)
 @Composable
 fun ListaPedidosScreen(navController: NavController,myViewModel: SharedViewModel) {
     val userName = myViewModel.getLoginUserName()
-    val pedidos = listOf(
-        Pedido(
-            id = 1,
-            nombre = "Pedido 1",
-            valor = 10.0,
-            fecha = "10/11/2023",
-            colaborador = "Miguel",
-            productos = listOf(
-                Producto(101, "Producto 1", 7.0),
-                Producto(102, "Producto 2", 3.0)
-            )
-        ),
-        Pedido(
-            id = 2,
-            nombre = "Pedido 2",
-            fecha = "10/11/2023",
-            colaborador = "Juan",
-            valor = 15.0,
-            productos = listOf(
-                Producto(103, "Producto 3", 7.0),
-                Producto(104, "Producto 4", 4.0)
-            )
-        ),
-        Pedido(
-            id = 3,
-            nombre = "Pedido 3",
-            fecha = "10/11/2023",
-            colaborador = "Marta",
-            valor = 20.0,
-            productos = listOf(
-                Producto(105, "Producto 5", 8.0),
-                Producto(106, "Producto 6", 2.0)
-            )
-        )
-    )
-    myViewModel.setPedidos(pedidos)
+    LaunchedEffect(Unit) {
+        myViewModel.getPedidos()
+    }
+    val pedidos by myViewModel.pedidos.observeAsState(emptyList())
+
 
     val gradientBrush = Brush.horizontalGradient(
         colors = listOf(
@@ -85,7 +87,7 @@ fun ListaPedidosScreen(navController: NavController,myViewModel: SharedViewModel
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.background) // Establece el color de fondo naranja
+                    .background(MaterialTheme.colorScheme.background)
             ) {
                 TopAppBar(
                     title = { Text(text = "Lista de Pedidos") },
@@ -119,7 +121,7 @@ fun ListaPedidosScreen(navController: NavController,myViewModel: SharedViewModel
         },
         floatingActionButton = {
             LargeFloatingActionButton(
-                onClick = {  },
+                onClick = {navController.navigate(DestinationScreen.AddPedidoScreenDest.route)},
                 shape = CircleShape,
                 containerColor = MaterialTheme.colorScheme.primary,
                 contentColor = MaterialTheme.colorScheme.onPrimary
@@ -137,8 +139,8 @@ fun PedidoItem(pedido: Pedido, navController: NavController) {
             .fillMaxWidth()
             .padding(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White, //Card background color
-            contentColor = Color.DarkGray  //Card content color,e.g.text
+            containerColor = Color.White,
+            contentColor = Color.DarkGray
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
@@ -146,14 +148,14 @@ fun PedidoItem(pedido: Pedido, navController: NavController) {
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp)
-                .background(Color.White) // Fondo blanco del Card
+                .background(Color.White)
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxHeight()
             ) {
                 Text(
-                    text = pedido.nombre,
+                    text = pedido.name,
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp
                 )
@@ -161,14 +163,14 @@ fun PedidoItem(pedido: Pedido, navController: NavController) {
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "${pedido.fecha}",
+                    text = "Entregar el: ${pedido.getFormattedShippingDate()}",
                     fontSize = 14.sp
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Text(
-                    text = "Colaborador: ${pedido.colaborador}",
+                    text = "Colaborador: ${pedido.collabName}",
                     fontSize = 14.sp
                 )
             }
@@ -182,7 +184,7 @@ fun PedidoItem(pedido: Pedido, navController: NavController) {
                 Icon(
                     imageVector = Icons.Default.Edit,
                     contentDescription = "Editar pedido",
-                    tint = Color.Magenta, // Color azul para el ícono de editar
+                    tint = Color.Magenta,
                     modifier = Modifier
                         .clickable {
                             navController.navigate(route = DestinationScreen.ListaProductoScreenDest.route)
@@ -192,17 +194,17 @@ fun PedidoItem(pedido: Pedido, navController: NavController) {
                 Icon(
                     imageVector = Icons.Default.Delete,
                     contentDescription = "Eliminar pedido",
-                    tint = Color.Red, // Color rojo para el ícono de eliminar
+                    tint = Color.Red,
                     modifier = Modifier
                         .clickable {
-                            // Lógica para eliminar el pedido
+
                         }
                         .padding(4.dp)
                 )
                 Icon(
                     imageVector = Icons.Default.LocationOn,
                     contentDescription = "Location",
-                    tint = Color.Gray, // Color amarillo para el ícono de ubicación
+                    tint = Color.Gray,
                     modifier = Modifier
                         .clickable {
                             navController.navigate(route = DestinationScreen.MapScreenDest.route)
@@ -210,7 +212,7 @@ fun PedidoItem(pedido: Pedido, navController: NavController) {
                         .padding(4.dp)
                 )
             }
-
+            Spacer(modifier = Modifier.height(15.dp))
             Column(
                 verticalArrangement = Arrangement.Bottom,
                 modifier = Modifier
@@ -218,7 +220,7 @@ fun PedidoItem(pedido: Pedido, navController: NavController) {
                     .align(Alignment.BottomStart)
             ) {
                 Text(
-                    text = "$${pedido.valor}",
+                    text = "$${pedido.total}",
                     fontSize = 18.sp,
                     color = Color.Blue
                 )

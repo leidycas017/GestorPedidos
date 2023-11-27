@@ -61,11 +61,11 @@ import androidx.navigation.NavController
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun ListaProductosScreen(navController: NavController, pedidoId: Int, myViewModel: SharedViewModel) {
-    val pedido = myViewModel.getPedidos()?.find { it.id == pedidoId }
+    //val pedido = myViewModel.getPedidos()?.find { it.id == pedidoId }
     var producto by remember { mutableStateOf("") }
     var valor by remember { mutableStateOf("") }
 
-    val productoSeleccionado:Producto? by myViewModel.productoSeleccionado.observeAsState(initial = pedido?.productos?.get(0))
+   // val productoSeleccionado:Producto? by myViewModel.productoSeleccionado.observeAsState(initial = pedido?.productos?.get(0))
 
 
 
@@ -79,11 +79,11 @@ fun ListaProductosScreen(navController: NavController, pedidoId: Int, myViewMode
             ) {
                 TopAppBar(
                     title = {
-                        pedido?.let {
-                            Text(text = "Editar Pedido: ${it.nombre}")
-                        } ?: run {
+                        //pedido?.let {
+                           // Text(text = "Editar Pedido: ${it.nombre}")
+                       // } ?: run {
                             Text(text = "Pedido no encontrado")
-                        }
+                       // }
                     },
                     colors = TopAppBarDefaults.mediumTopAppBarColors(
                         containerColor = MaterialTheme.colorScheme.primary,
@@ -92,7 +92,7 @@ fun ListaProductosScreen(navController: NavController, pedidoId: Int, myViewMode
                         actionIconContentColor = MaterialTheme.colorScheme.onSecondary
                     ),
 
-                )
+                    )
             }
         },
         content = { paddingValues ->
@@ -119,15 +119,15 @@ fun ListaProductosScreen(navController: NavController, pedidoId: Int, myViewMode
                                     .align(Alignment.CenterVertically)
                             )
 
-                            TextField(
-                                value = productoSeleccionado?.nombre ?: "",
-                                onValueChange = { producto = it},
-                                label = { Text("Producto") },
-                                modifier = Modifier
-                                    .weight(1f)
-                                    .padding(8.dp)
-                                    .align(Alignment.CenterVertically)
-                            )
+                            //TextField(
+                              //  value = productoSeleccionado?.nombre ?: "",
+                                //onValueChange = { producto = it},
+                                //label = { Text("Producto") },
+                                //modifier = Modifier
+                                  //  .weight(1f)
+                                    //.padding(8.dp)
+                                    //.align(Alignment.CenterVertically)
+                            //)
                             Icon(
                                 painter = painterResource(id = R.drawable.mic),
                                 contentDescription = "mic",
@@ -136,15 +136,15 @@ fun ListaProductosScreen(navController: NavController, pedidoId: Int, myViewMode
                                     .align(Alignment.CenterVertically)
                             )
 
-                            TextField(
-                                value = productoSeleccionado?.valor.toString() ?: "",
-                                onValueChange = { valor = it},
-                                label = { Text("Valor") },
-                                modifier = Modifier
-                                    .weight(0.5f)
-                                    .padding(8.dp)
-                                    .align(Alignment.CenterVertically)
-                            )
+                            //TextField(
+                              //  value = productoSeleccionado?.valor.toString() ?: "",
+                                //onValueChange = { valor = it},
+                                //label = { Text("Valor") },
+                                //modifier = Modifier
+                                  //  .weight(0.5f)
+                                    //.padding(8.dp)
+                                    //.align(Alignment.CenterVertically)
+                            //)
 
                             Icon(
                                 imageVector = Icons.Default.AddCircle,
@@ -163,29 +163,29 @@ fun ListaProductosScreen(navController: NavController, pedidoId: Int, myViewMode
                             TableCell(text = "VALOR", weight = .5f)
                         }
                     }
-                    if (pedido != null) {
-                        items(pedido.productos) { producto ->
-                            ProductoItem(producto = producto, myViewModel)
-                            Divider(
-                                color = Color.Gray,
-                                thickness = 1.dp,
-                                modifier = Modifier.padding(horizontal = 16.dp)
-                            )
-                        }
-                    }
+                    //if (pedido != null) {
+                      //  items(pedido.productos) { producto ->
+                        //    ProductoItem(producto = producto, myViewModel)
+                          //  Divider(
+                            //    color = Color.Gray,
+                              //  thickness = 1.dp,
+                                //modifier = Modifier.padding(horizontal = 16.dp)
+                            //)
+                        //}
+                    //}
                 }
 
 
-                if (pedido != null) {
-                    Text(
-                        text = "Valor Total: ${pedido.valor}",
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(30.dp),
-                        fontWeight = FontWeight.Bold
+                //if (pedido != null) {
+                  //  Text(
+                    //    text = "Valor Total: ${pedido.valor}",
+                      //  modifier = Modifier
+                        //    .fillMaxWidth()
+                          //  .padding(30.dp),
+                        //fontWeight = FontWeight.Bold
 
-                    )
-                }
+                    //)
+                //}
             }
         },
 
@@ -234,7 +234,6 @@ fun ListaProductosScreen(navController: NavController, pedidoId: Int, myViewMode
         }
 
     )
-
 }
 
 private fun isWhatsAppInstalled(packageManager: PackageManager): Boolean {

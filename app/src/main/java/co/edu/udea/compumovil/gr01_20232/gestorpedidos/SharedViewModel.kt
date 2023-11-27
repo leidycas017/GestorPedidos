@@ -8,20 +8,80 @@ import com.google.firebase.Firebase
 import com.google.firebase.auth.AuthCredential
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.firestore
+import com.google.firebase.firestore.toObject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
-
+import kotlinx.coroutines.tasks.await
 
 class SharedViewModel : ViewModel() {
     private val auth: FirebaseAuth = Firebase.auth
     private val _loading = MutableLiveData(false)
     private var username: String = ""
     private var password: String = ""
-    private val _pedidos = MutableLiveData<List<Pedido>>()
     private val _productoSeleccionado = MutableLiveData<Producto>()
+    val productoSeleccionado: LiveData<Producto> = _productoSeleccionado
+
+
+    //PRODUCTS AND ORDERS DB
+
+    val db = Firebase.firestore
+    private val pedidosCollection  = db.collection("pedidos")
+    private val productsCollection = db.collection("products")
+
+
+    private val _pedidos = MutableLiveData<List<Pedido>>()
     val pedidos: LiveData<List<Pedido>> get() = _pedidos
 
-    val productoSeleccionado: LiveData<Producto> = _productoSeleccionado
+    fun getPedidos() {
+        viewModelScope.launch(Dispatchers.IO) {
+            try {
+                val result = pedidosCollection.get().await()
+                val pedidos = result.toObjects(Pedido::class.java)
+                _pedidos.postValue(pedidos)
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+        }
+    }
+    fun  addPedido(
+        address: String,
+        amount: List<Int>,
+        custName: String,
+        name: String,
+        products: List<String>,
+        shippingDate:String,
+        status: String,
+        total: Double
+    ) {
+        val nuevoPedido = hashMapOf(
+            "address" to address,
+            "amount" to amount,
+            "collabName" to auth.currentUser?.displayName,
+            "creationDate" to shippingDate,
+            "custName" to custName,
+            "name" to name,
+            "product" to products,
+            "shippingDate" to shippingDate,
+            "status" to status,
+            "total" to total
+        )
+
+        pedidosCollection.add(nuevoPedido)
+            .addOnSuccessListener { documentReference ->
+                println("Pedido agregado con ID: ${documentReference.id}")
+            }
+            .addOnFailureListener { e ->
+                println("Error al agregar el pedido: $e")
+            }
+    }
+
+
+
 
     //LOGIN WITH EMAIL
     fun signInWithEmail(email:String,password: String,home: () -> Unit)
@@ -111,11 +171,6 @@ class SharedViewModel : ViewModel() {
     }
     fun getLoginUserPassword(): String {
         return password
-    }
-
-
-    fun getPedidos(): List<Pedido>? {
-        return _pedidos.value
     }
 
     fun setPedidos(pedidos: List<Pedido>) {
